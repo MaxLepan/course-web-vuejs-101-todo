@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
   <head>
     <meta charset="utf-8">
@@ -16,24 +12,34 @@
     <div id="app" class="container mx-auto p-6 flex flex-col">
       <div class="flex flex-col items-center bg-gray-100 p-8 rounded-xl">
         <h1 class="text-3xl font-black mb-6">TodoList</h1>
-        <button class="rounded-lg bg-blue-600 text-white ml-2 p-2 hover:bg-red-500">Sort by priority</button>
+        <button class="rounded-lg bg-blue-600 text-white ml-2 p-2 hover:bg-red-500" @click="sortTasksByPriority">Sort by priority</button>
         <ul class="min-w-full">
-          <!-- À vous de jouer ici -->
-          <!-- <li class="m-2 p-4 rounded cursor-pointer bg-blue-200 hover:bg-blue-500 hover:text-white"> À vous de jouer ici -->
+          <li class="m-2 p-4 rounded cursor-pointer hover:text-white"
+              v-for="task in reversedTasks"
+              @click="toggleDone(task)"
+              :class="[
+                    task.done ? 'line-through' : 'no-underline',
+                    task.taskPriority === '2' ? 'bg-red-200 hover:bg-red-500' : task.taskPriority === '1' ? 'bg-yellow-200 hover:bg-yellow-500' : 'bg-blue-200 hover:bg-blue-500'
+                    ]"
+              :key="task.id">
+            {{task.label}}
+          </li>
         </ul>
       </div>
       <div class="mt-4 flex flex-row ">
-          <input type="text" class="flex-grow bg-gray-100 p-2 rounded-lg " placeholder="Add a task" >
-          <!-- Quand vous en serez à l'étape sur la gestion de la priorité, décommentez la ligne suivante -->
-          <!--
-          <select class="bg-gray-100 p-2 rounded-lg ml-2">
-            <option value="" selected>Normal 🖊</option>
-            <option value="">Important 🥊</option>
-            <option value="">Urgent 🚨</option>
+          <input @keyup.enter="saveTask" v-model="newTask" type="text" class="flex-grow bg-gray-100 p-2 rounded-lg " placeholder="Add a task" >
+          <select class="bg-gray-100 p-2 rounded-lg ml-2" v-model="taskPriority">
+            <option value="0" selected>Normal 🖊</option>
+            <option value="1">Important 🥊</option>
+            <option value="2">Urgent 🚨</option>
           </select>
-          -->
-          <button class="rounded-lg bg-blue-600 text-white ml-2 p-2 hover:bg-blue-500">Add task</button>
-          <button class="rounded-lg bg-red-600 text-white ml-2 p-2 hover:bg-red-500">Clear tasks</button>
+          <button class="rounded-lg bg-blue-600 text-white ml-2 p-2 hover:bg-blue-500"
+                  @click="saveTask"
+                  :disabled="newTask.length === 0"
+          >Add task</button>
+          <button class="rounded-lg bg-red-600 text-white ml-2 p-2 hover:bg-red-500"
+                  @click="clearTasks"
+          >Clear tasks</button>
       </div>
     </div>
 
